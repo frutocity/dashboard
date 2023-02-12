@@ -83,7 +83,7 @@ const ProductTable = ({ list }) => {
           {list.length
             ? list.map(row => (
               <TableRow
-                key={row._id}
+                key={row?._id}
                 sx={{
                   '&:last-of-type td, &:last-of-type th': {
                     border: 0
@@ -91,9 +91,9 @@ const ProductTable = ({ list }) => {
                 }}
               >
                 <TableCell component='th' scope='row'>
-                  <Avatar alt='Remy Sharp' className='banner-img' src={row.photo[0]} />
+                  <Avatar alt='Remy Sharp' className='banner-img' src={row?.photo[0]} />
                 </TableCell>
-                <TableCell > {row.name} </TableCell>
+                <TableCell > {row?.name} </TableCell>
                 <TableCell >
                   <CopyToClipboard text={row?._id ?? ""} >
                     <IconButton  >
@@ -103,13 +103,13 @@ const ProductTable = ({ list }) => {
                   </CopyToClipboard>
                 </TableCell>
 
-                <TableCell > {row.price} </TableCell>
-                <TableCell > {row.category.name} </TableCell>
-                <TableCell > {row.quantity} </TableCell>
-                <TableCell > {row.discount} </TableCell>
-                <TableCell > {row.store.name} </TableCell>
+                <TableCell > {row?.price} </TableCell>
+                <TableCell > {row?.category.name} </TableCell>
+                <TableCell > {row?.quantity} </TableCell>
+                <TableCell > {row?.discount} </TableCell>
+                <TableCell > {row?.store.name} </TableCell>
                 <TableCell >
-                  <Switch checked={row.active} onChange={handleToggle(row._id)} color='primary' />
+                  <Switch checked={row?.active} onChange={handleToggle(row?._id)} color='primary' />
 
                 </TableCell>
                 <TableCell align='right' >
@@ -119,7 +119,7 @@ const ProductTable = ({ list }) => {
                   }} >
                     Edit
                   </Button>{' '}
-                  <Button variant='outlined' onClick={handleDelete(row._id)} startIcon={<DeleteIcon />}>
+                  <Button variant='outlined' onClick={handleDelete(row?._id)} startIcon={<DeleteIcon />}>
                     Delete
                   </Button>
                 </TableCell>

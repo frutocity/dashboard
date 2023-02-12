@@ -90,6 +90,16 @@ const navigation = () => {
       path: '/role',
       diff: true,
     },
+    {
+      sectionTitle: 'Orders'
+    },
+    {
+      title: 'List',
+      icon: faUsers,
+      path: '/orders',
+      diff: true,
+    },
+
   ]
 }
 

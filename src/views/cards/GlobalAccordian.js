@@ -7,15 +7,19 @@ import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 
-function GlobalAccordian({ title, children }) {
+function GlobalAccordian({ title, children, titeComponent, onChange }) {
     return (
-        <Accordion>
+        <Accordion onChange={onChange}  >
             <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
             >
-                <Typography>{title ?? ""}</Typography>
+                {
+                    titeComponent ?
+                        titeComponent :
+                        <Typography>{title ?? ""}</Typography>
+                }
             </AccordionSummary>
             <AccordionDetails>
                 {children}

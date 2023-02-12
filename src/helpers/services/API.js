@@ -4,14 +4,15 @@ const api = new Repository()
 const toast = new CustomToast()
 import Joi from 'joi'
 import JotaiNexus, { readAtom, writeAtom } from "jotai-nexus";
-import { allInactiveIdsAtom, bannerListAtom, bestSellingListAtom, categoryListAtom, employeeListAtom, exchangeListAtom, exclusiveOfferListAtom, mostPopularListAtom, productListAtom, roleListAtom, searchListAtom, settingListAtom, storeListAtom, unitListAtom, userDataByIdAtom, userIdsAtom, userPaymentDataAtom, usersListAtom, userTransactionsAtom } from '../jotai/apiAtoms'
+import { allInactiveIdsAtom, bannerListAtom, bestSellingListAtom, categoryListAtom, employeeListAtom, exchangeListAtom, exclusiveOfferListAtom, mostPopularListAtom, orderListAtom, orderListPaginateAtom, productListAtom, roleListAtom, searchListAtom, settingListAtom, storeListAtom, unitListAtom, userDataByIdAtom, userIdsAtom, userPaymentDataAtom, usersListAtom, userTransactionsAtom } from '../jotai/apiAtoms'
 import { userDataAtom } from '../jotai/atom'
 
-const { auth, product, store, user } = {
+const { auth, product, store, user, order } = {
     product: "product",
     store: "store",
     auth: "auth",
-    user: "user"
+    user: "user",
+    order: "order"
 }
 
 export default {
@@ -483,6 +484,7 @@ export default {
 
     updateUser: ({ body, params }, cb) => {
         toast.loading("Updating...")
+
         const Schema = Joi.object({
             _id: Joi.string().required(),
             name: Joi.any().optional().allow(null).allow(""),
@@ -496,7 +498,7 @@ export default {
             sys_user: Joi.any().optional().allow(null).allow(""),
             level: Joi.any().optional().allow(null).allow(""),
             profile_completed: Joi.any().optional().allow(null).allow(""),
-        }).validate(body)
+        }).validate(body);
 
         if (Schema.error) {
             return toast.error(Schema.error.message)
@@ -507,6 +509,7 @@ export default {
             .then(d => {
                 if (d.status) {
                     toast.success(d.message)
+
                     return cb(d)
                 } else {
                     return toast.error(d.message)
@@ -547,6 +550,7 @@ export default {
 
     updateUserBankStatus: ({ body, params }, cb) => {
         toast.loading("Updating...")
+
         const Schema = Joi.object({
             user_id: Joi.string().required(),
             status: Joi.string().required(),
@@ -1131,6 +1135,41 @@ export default {
             .then(d => {
                 if (d.status) {
                     writeAtom(roleListAtom, d.data)
+                    return cb(d)
+                } else {
+                    return toast.error(d.message)
+                }
+            })
+            .catch(err => console.log(err))
+    },
+
+    orderList: ({ params }, cb) => {
+        api
+            .get(order + '/', params)
+            .then(d => {
+                if (d.status) {
+                    writeAtom(orderListAtom, d.data)
+                    let opt = readAtom(orderListPaginateAtom)
+                    writeAtom(orderListPaginateAtom, {
+                        ...opt,
+                        page: d.meta.page,
+                        page_count: d.meta.total_pages,
+                        total_count: d.meta.total_count
+                    });
+
+                    return cb(d)
+                } else {
+                    return toast.error(d.message)
+                }
+            })
+            .catch(err => console.log(err))
+    },
+    orderById: ({ params }, cb) => {
+        api
+            .get(order + `/${params?._id}`, {})
+            .then(d => {
+                if (d.status) {
+
                     return cb(d)
                 } else {
                     return toast.error(d.message)
